@@ -1,5 +1,10 @@
 name: cd
 
+on:
+  push:
+    branches:
+      - "no-auto-trigger"
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
