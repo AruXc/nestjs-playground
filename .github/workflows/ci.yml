@@ -43,7 +43,7 @@ jobs:
         name: Run tests
         run: npm run test
   build:
-    nees:
+    needs:
       - lint
       - test
     runs-on: ubuntu-latest
