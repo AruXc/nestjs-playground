@@ -1,9 +1,6 @@
 name: cd
 
-on:
-  push:
-    branches:
-      - "no-auto-trigger"
+on: workflow_dispatch
 
 jobs:
   deploy:
