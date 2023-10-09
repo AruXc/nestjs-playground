@@ -1,0 +1,70 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v4
+      - 
+        name: Set up Node environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.18.0'
+      - 
+        name: Install dependencies
+        run: npm install
+      - 
+        name: Run linting
+        run: npm run lint
+  test:
+    needs:
+      - lint
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v4
+      - 
+        name: Set up Node environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.18.0'
+      - 
+        name: Install dependencies
+        run: npm install
+      - 
+        name: Run tests
+        run: npm run test
+  build:
+    nees:
+      - lint
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/playground:nestjs-playground
